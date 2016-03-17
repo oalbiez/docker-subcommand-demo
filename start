@@ -1,0 +1,21 @@
+#!/bin/bash
+
+VOLUME=/usr/src/app
+NEW_USER=user
+NEW_GROUP=$NEW_USER
+NEW_UID=$(stat -c "%u" $VOLUME )
+NEW_GID=$(stat -c "%g" $VOLUME )
+
+getent group $NEW_GID
+[ $? -gt 0 ] && groupadd --gid $NEW_GID $NEW_GROUP
+getent passwd $NEW_UID
+[ $? -gt 0 ] && useradd --create-home --uid $NEW_UID --gid $NEW_GID $NEW_USER
+
+COMMAND=$1
+if [ "$COMMAND" == "" ]
+then
+	exec su $NEW_USER
+else
+	shift 1
+	exec su $NEW_USER -c "/usr/local/bin/$COMMAND $@"
+fi

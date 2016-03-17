@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "PWD"
+pwd
+
+echo
+echo "Commands"
+ls "/usr/local/bin/"
+
+echo
+echo "Environment"
+env
+
+
