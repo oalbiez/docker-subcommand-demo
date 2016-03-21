@@ -1,21 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 VOLUME=/usr/src/app
-NEW_USER=user
-NEW_GROUP=$NEW_USER
-NEW_UID=$(stat -c "%u" $VOLUME )
-NEW_GID=$(stat -c "%g" $VOLUME )
+USER=user
+GROUP=user
+VOLUME_UID=$(stat -c "%u" $VOLUME )
+VOLUME_GID=$(stat -c "%g" $VOLUME )
 
-getent group $NEW_GID
-[ $? -gt 0 ] && groupadd --gid $NEW_GID $NEW_GROUP
-getent passwd $NEW_UID
-[ $? -gt 0 ] && useradd --create-home --uid $NEW_UID --gid $NEW_GID $NEW_USER
-
-COMMAND=$1
-if [ "$COMMAND" == "" ]
+if [ "$VOLUME_UID" != "0" ]
 then
-	exec su $NEW_USER
+    getent group $VOLUME_GID
+    [ $? -gt 0 ] && groupadd --gid $VOLUME_GID $GROUP
+    getent passwd $VOLUME_UID
+    [ $? -gt 0 ] && useradd --create-home --uid $VOLUME_UID --gid $VOLUME_GID $USER
 else
-	shift 1
-	exec su $NEW_USER -c "/usr/local/bin/$COMMAND $@"
+    USER="root"
+fi
+
+COMMAND=${1:-cli}
+shift 1
+
+set -x
+
+if [ "$COMMAND" == "cli" ]
+then
+    exec su $USER
+else
+    exec su $USER -c "/usr/local/bin/$COMMAND $(printf " %q" "$@")"
 fi

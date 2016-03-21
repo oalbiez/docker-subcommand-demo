@@ -1,14 +1,16 @@
 #!/bin/bash
 
-echo "PWD"
-pwd
+echo "Arguments: $@"
 
 echo
-echo "Commands"
+echo "Current directory: $(pwd)"
+
+echo
+echo "Commands:"
 ls "/usr/local/bin/"
 
 echo
-echo "Environment"
+echo "Environment:"
 env
 
 
