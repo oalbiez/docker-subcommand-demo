@@ -1,12 +1,13 @@
-from ubuntu
+FROM ubuntu
+MAINTAINER olivier.albiez@poloper.org
 
-copy start /usr/bin/start
-copy commands/ /usr/local/bin/
-copy environment /etc/environment
-run chmod +x /usr/bin/start /usr/local/bin/*
+COPY start /usr/bin/start
+COPY commands/ /usr/local/bin/
+COPY environment /etc/environment
+RUN chmod +x /usr/bin/start /usr/local/bin/*
 
-workdir /usr/src/app
-volume ["/usr/src/app"]
+WORKDIR /usr/src/app
+VOLUME ["/usr/src/app"]
 
-entrypoint ["/usr/bin/start"]
+ENTRYPOINT ["/usr/bin/start"]
 
